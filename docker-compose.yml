@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:13
+    container_name: crowdfunding_db
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: crowdfunding_db
+      POSTGRES_USER: crowdfunding_user
+      POSTGRES_PASSWORD: crowdfunding_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+volumes:
+  postgres_data:
