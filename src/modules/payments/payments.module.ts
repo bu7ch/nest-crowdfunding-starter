@@ -14,6 +14,5 @@ import { CampaignsModule } from '../campaigns/campaigns.module';
   ],
   providers: [PaymentsService, StripeService],
   controllers: [PaymentsController],
-  exports: [PaymentsService],
 })
 export class PaymentsModule {}

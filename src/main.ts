@@ -1,19 +1,27 @@
+// src/main.ts
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-  }));
-  
+
+  // 1. Swagger
+  const config = new DocumentBuilder()
+    .setTitle('Crowdfunding API')
+    .setDescription('Simple crowdfunding endpoints')
+    .setVersion('1.0')
+    .addBearerAuth() // si tu utilises JWT plus tard
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
+  // 2. CORS (facultatif mais pratique pour front)
   app.enableCors();
-  
-  await app.listen(process.env.PORT || 3000);
-  console.log(`🚀 Application is running on: ${await app.getUrl()}`);
+
+  // 3. Démarrage
+  await app.listen(3000);
+  console.log('Application is running on: http://localhost:3000');
+  console.log('Swagger UI:        http://localhost:3000/api');
 }
 bootstrap();
