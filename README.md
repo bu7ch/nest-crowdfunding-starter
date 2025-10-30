@@ -4,6 +4,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-100%25-3178c6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13-336791?style=for-the-badge&logo=postgresql)](https://www.postgresql.org/)
 [![Stripe](https://img.shields.io/badge/Stripe-Payments-635bff?style=for-the-badge&logo=stripe)](https://stripe.com/)
+[![Swagger](https://img.shields.io/badge/Swagger-API%20Docs-85ea2d?style=for-the-badge&logo=swagger)](https://swagger.io/)
 
 Une application de crowdfunding complète construite avec **NestJS 10**, **PostgreSQL** et **Stripe**. Parfaite pour apprendre les bonnes pratiques de développement backend !
 
@@ -13,9 +14,10 @@ Une application de crowdfunding complète construite avec **NestJS 10**, **Postg
 - 🎯 **CRUD Campagnes** avec objectifs et dates limites
 - 💳 **Paiements sécurisés** via Stripe (mode test)
 - 📊 **Suivi des dons** et montants collectés
+- 📚 **Documentation API interactive** avec Swagger
 - 🐳 **Docker Ready** avec PostgreSQL
 - 🧪 **Tests complets** avec Jest
-- 📚 **Architecture modulaire** et maintenable
+- 🏗️ **Architecture modulaire** et maintenable
 
 ## 🏗️ Architecture
 
@@ -38,7 +40,7 @@ src/
 - Docker et Docker Compose
 - Compte Stripe (pour les clés test)
 
-### 📥 Installation
+### 📥 Installation & Lancement
 
 1. **Cloner le repository**
 ```bash
@@ -57,17 +59,20 @@ cp .env.example .env
 ```
 Éditez le fichier `.env` avec vos configurations :
 ```env
+# Database
 DB_HOST=localhost
 DB_PORT=5432
 DB_USERNAME=crowdfunding_user
 DB_PASSWORD=crowdfunding_password
 DB_NAME=crowdfunding_db
 
+# JWT
 JWT_SECRET=your_super_secret_jwt_key_change_in_production
 JWT_EXPIRES_IN=7d
 
-STRIPE_SECRET_KEY=sk_test_your_stripe_test_secret_key_here
-STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key_here
+# Stripe (obtenez ces clés sur https://dashboard.stripe.com/test/apikeys)
+STRIPE_SECRET_KEY=sk_test_51...
+STRIPE_PUBLISHABLE_KEY=pk_test_51...
 ```
 
 4. **Lancer la base de données**
@@ -79,13 +84,31 @@ docker-compose up -d
 ```bash
 # Mode développement
 npm run start:dev
-
-# Ou mode production
-npm run build
-npm run start:prod
 ```
 
-L'application sera disponible sur `http://localhost:3000` 🎉
+6. **Accéder à l'application**
+- **API** : `http://localhost:3000`
+- **Documentation Swagger** : `http://localhost:3000/api`
+
+## 📚 Documentation API (Swagger)
+
+Notre API est entièrement documentée avec **Swagger/OpenAPI** ! 🎉
+
+### 🎯 Points d'accès Swagger
+
+- **📖 Documentation interactive** : `http://localhost:3000/api`
+- **🔍 Explorer les endpoints** : Testez directement les APIs depuis le navigateur
+- **🔐 Authentification** : Toutes les routes protégées sont documentées
+- **📝 Exemples** : Données d'exemple pour chaque endpoint
+
+### 🚀 Utiliser Swagger
+
+1. **Ouvrez** `http://localhost:3000/api` dans votre navigateur
+2. **Authentifiez-vous** : 
+   - Utilisez le endpoint `/auth/register` pour créer un compte
+   - Puis `/auth/login` pour obtenir un token JWT
+3. **Authorizez** : Cliquez sur le bouton "Authorize" et entrez `Bearer VOTRE_JWT_TOKEN`
+4. **Testez** : Essayez tous les endpoints directement depuis l'interface !
 
 ## 🧪 Tests
 
@@ -98,13 +121,16 @@ npm run test:e2e
 
 # Couverture de tests
 npm run test:cov
+
+# Tests en mode watch
+npm run test:watch
 ```
 
-## 📚 API Examples
+## 🎯 Exemples d'API
 
 ### 🔐 Authentification
 
-**Inscription**
+**Inscription** ([Tester sur Swagger](http://localhost:3000/api#/auth/AuthController_register))
 ```bash
 curl -X POST http://localhost:3000/auth/register \
   -H "Content-Type: application/json" \
@@ -115,7 +141,7 @@ curl -X POST http://localhost:3000/auth/register \
   }'
 ```
 
-**Connexion**
+**Connexion** ([Tester sur Swagger](http://localhost:3000/api#/auth/AuthController_login))
 ```bash
 curl -X POST http://localhost:3000/auth/login \
   -H "Content-Type: application/json" \
@@ -127,7 +153,7 @@ curl -X POST http://localhost:3000/auth/login \
 
 ### 🎯 Campagnes
 
-**Créer une campagne** (Authentification requise)
+**Créer une campagne** ([Tester sur Swagger](http://localhost:3000/api#/campaigns/CampaignsController_create))
 ```bash
 curl -X POST http://localhost:3000/campaigns \
   -H "Content-Type: application/json" \
@@ -140,14 +166,14 @@ curl -X POST http://localhost:3000/campaigns \
   }'
 ```
 
-**Lister les campagnes**
+**Lister les campagnes** ([Tester sur Swagger](http://localhost:3000/api#/campaigns/CampaignsController_findAll))
 ```bash
 curl -X GET http://localhost:3000/campaigns
 ```
 
 ### 💳 Paiements
 
-**Créer un don** (Authentification requise)
+**Créer un don** ([Tester sur Swagger](http://localhost:3000/api#/payments/PaymentsController_createPaymentIntent))
 ```bash
 curl -X POST http://localhost:3000/payments/create-payment-intent \
   -H "Content-Type: application/json" \
@@ -161,12 +187,12 @@ curl -X POST http://localhost:3000/payments/create-payment-intent \
 ## 🔧 Configuration Stripe
 
 1. **Créez un compte Stripe** sur [stripe.com](https://stripe.com)
-2. **Récupérez vos clés test** dans le Dashboard Développeur
-3. **Configurez les webhooks** (optionnel) pour le mode production
+2. **Récupérez vos clés test** dans le [Dashboard Développeur](https://dashboard.stripe.com/test/apikeys)
+3. **Ajoutez-les** dans votre fichier `.env`
 
 **Clés test à utiliser :**
-- `pk_test_...` pour la clé publique
-- `sk_test_...` pour la clé secrète
+- `pk_test_...` pour la clé publique (frontend)
+- `sk_test_...` pour la clé secrète (backend)
 
 ## 🐛 Dépannage
 
@@ -180,17 +206,18 @@ docker-compose down
 docker-compose up -d
 ```
 
-**Erreurs de dépendances**
+**Erreur Stripe**
 ```bash
-# Supprimer node_modules et réinstaller
-rm -rf node_modules package-lock.json
-npm install
+# Vérifier que les clés Stripe sont correctes dans .env
+# Tester avec une clé valide depuis https://dashboard.stripe.com/test/apikeys
 ```
 
-**Problèmes de permissions**
+**Swagger non accessible**
 ```bash
-# Donner les permissions à Docker
-sudo chown -R $USER:$USER .
+# Vérifier que l'application tourne
+curl http://localhost:3000/api
+
+# Vérifier le port dans .env
 ```
 
 ## 📖 Bonnes Pratiques Implémentées
@@ -199,9 +226,22 @@ sudo chown -R $USER:$USER .
 - ✅ **KISS** (Keep It Simple) - Architecture modulaire et claire
 - ✅ **YAGNI** (You Ain't Gonna Need It) - Focus sur les features essentielles
 - ✅ **Validation** des données avec class-validator
+- ✅ **Documentation API** avec Swagger/OpenAPI
 - ✅ **Gestion d'erreurs** centralisée
 - ✅ **Sécurité** - mots de passe hashés, JWT sécurisé
 - ✅ **Tests** unitaires et e2e
+
+## 🎓 Apprentissage
+
+Ce projet est parfait pour apprendre :
+
+- **NestJS** et son architecture modulaire
+- **TypeORM** et les relations entre entités
+- **Stripe** et les paiements en ligne
+- **JWT** et l'authentification sécurisée
+- **Swagger** et la documentation d'API
+- **Tests** avec Jest et Supertest
+- **Docker** et la containerisation
 
 ## 🤝 Contribuer
 
@@ -213,24 +253,6 @@ Les contributions sont les bienvenues !
 4. **Pushez** la branche (`git push origin feature/AmazingFeature`)
 5. **Ouvrez une Pull Request**
 
-### 📋 Guidelines de contribution
-
-- Suivez les conventions de code existantes
-- Ajoutez des tests pour les nouvelles fonctionnalités
-- Mettez à jour la documentation si nécessaire
-- Utilisez des messages de commit clairs
-
-## 🎓 Apprentissage
-
-Ce projet est parfait pour apprendre :
-
-- **NestJS** et son architecture modulaire
-- **TypeORM** et les relations entre entités
-- **Stripe** et les paiements en ligne
-- **JWT** et l'authentification sécurisée
-- **Tests** avec Jest et Supertest
-- **Docker** et la containerisation
-
 ## 📝 Licence
 
 Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de détails.
@@ -240,16 +262,29 @@ Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de
 - [NestJS](https://nestjs.com/) - Framework backend progressif
 - [TypeORM](https://typeorm.io/) - ORM pour TypeScript
 - [Stripe](https://stripe.com/) - API de paiements
+- [Swagger](https://swagger.io/) - Documentation d'API
 - La communauté NestJS pour l'excellente documentation
 
 ---
 
 **Développé avec ❤️ pour la communauté des développeurs juniors**
 
-*Des questions ? Ouvrez une [issue](https://github.com/ton-username/nest-crowdfunding-starter/issues) ou rejoignez la discussion !*
+*Des questions ? Ouvrez une [issue](https://github.com/ton-username/nest-crowdfunding-starter/issues) ou testez l'API sur [Swagger](http://localhost:3000/api) !*
 
 <div align="center">
 
 **⭐ N'oubliez pas de donner une étoile au repo si cela vous a aidé !**
 
 </div>
+
+## 🔄 Prochaines Étapes
+
+Après avoir maîtrisé ce starter, vous pouvez :
+
+1. **Ajouter un frontend** (React, Angular, Vue)
+2. **Implémenter les webhooks Stripe**
+3. **Ajouter des emails** de confirmation
+4. **Déployer en production** (Heroku, Vercel, AWS)
+5. **Ajouter des tests E2E** avancés
+
+**Bon code !** 🚀
